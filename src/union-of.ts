@@ -1,5 +1,6 @@
 import { creatorsOf } from "./creators-of";
-import { SchemaToUnion } from "./schema-to-union";
+import { CreatorsToValue } from "./creators-to-value";
+import { SchemaToUnion as UnionOf } from "./schema-to-union";
 
 function caseOf(value: any, pattern: any): any {
   if (typeof pattern === "undefined") {
@@ -15,6 +16,8 @@ function caseOf(value: any, pattern: any): any {
   return pattern._(value);
 }
 
-export function unionOf<T>(schema: T): SchemaToUnion<T> {
-  return { ...creatorsOf(schema), caseOf } as SchemaToUnion<T>;
+export type TypeOf<Union> = CreatorsToValue<Omit<Union, "caseOf">>;
+
+export function unionOf<Schema>(schema: Schema): UnionOf<Schema> {
+  return { ...creatorsOf(schema), caseOf } as UnionOf<Schema>;
 }
