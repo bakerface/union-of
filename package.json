@@ -1,0 +1,38 @@
+{
+  "name": "union-of",
+  "version": "0.0.0",
+  "main": "dist/union-of.js",
+  "module": "dist/union-of.mjs",
+  "types": "dist/union-of.d.ts",
+  "license": "MIT",
+  "author": "Chris Baker <mail.chris.baker@gmail.com>",
+  "description": "TypeScript union types without the boilerplate",
+  "keywords": [
+    "ts",
+    "typescript",
+    "union",
+    "action",
+    "creator",
+    "event",
+    "redux",
+    "case",
+    "pattern"
+  ],
+  "eslintConfig": {
+    "extends": "./node_modules/@bakerface/typescript-starter/eslint",
+    "rules": {
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  },
+  "nyc": {
+    "extends": "@bakerface/typescript-starter/nyc"
+  },
+  "scripts": {
+    "build": "typescript-starter build src/index.ts",
+    "lint": "typescript-starter lint .",
+    "test": "typescript-starter test 'src/**/*.test.*'"
+  },
+  "devDependencies": {
+    "@bakerface/typescript-starter": "^0.1.1"
+  }
+}
