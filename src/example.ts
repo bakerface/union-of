@@ -25,7 +25,7 @@ const DeviceEvents = unionOf({
   },
 });
 
-export type DeviceEvent = TypeOf<typeof DeviceEvents>;
+type DeviceEvent = TypeOf<typeof DeviceEvents>;
 
 const toMessage = DeviceEvents.caseOf({
   Connected({ at, host, port }) {

@@ -4,4 +4,4 @@ type GetReturnTypesOf<T> = {
   readonly [K in keyof T]: GetReturnTypeOf<T[K]>;
 };
 
-export type CreatorsToValue<T> = GetReturnTypesOf<T>[keyof T];
+export type CreatorsToType<T> = GetReturnTypesOf<T>[keyof T];

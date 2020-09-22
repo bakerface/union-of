@@ -1,16 +1,16 @@
-interface Tagged<T, P> {
+type Tagged<T, P> = {
   readonly type: T;
   readonly payload: P;
-}
+};
 
-type SchemaToType<T> = T extends NumberConstructor
+type SchemaToType<T> = T extends BooleanConstructor
+  ? boolean
+  : T extends NumberConstructor
   ? number
   : T extends StringConstructor
   ? string
-  : T extends BooleanConstructor
-  ? boolean
-  : T extends DateConstructor
-  ? Date
+  : T extends new (...args: any[]) => infer R
+  ? R
   : T extends object
   ? { readonly [K in keyof T]: SchemaToType<T[K]> }
   : "Error: Unable to convert schema to type";
