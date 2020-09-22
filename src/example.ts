@@ -1,6 +1,6 @@
-import { unionOf, SchemaToValue } from ".";
+import { unionOf, TypeOf } from ".";
 
-const DeviceEventSchema = {
+const DeviceEvents = unionOf({
   Disconnected: {
     at: Date,
     host: String,
@@ -23,10 +23,9 @@ const DeviceEventSchema = {
     port: Number,
     data: String,
   },
-};
+});
 
-export type DeviceEvent = SchemaToValue<typeof DeviceEventSchema>;
-export const DeviceEvents = unionOf(DeviceEventSchema);
+export type DeviceEvent = TypeOf<typeof DeviceEvents>;
 
 const toMessage = DeviceEvents.caseOf({
   Connected({ at, host, port }) {
