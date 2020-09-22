@@ -1,6 +1,6 @@
 {
   "name": "union-of",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/union-of.js",
   "module": "dist/union-of.mjs",
   "types": "dist/union-of.d.ts",
