@@ -1,65 +1,100 @@
 import { unionOf, TypeOf } from ".";
 
+const Device = unionOf({
+  Local: {
+    path: String,
+  },
+  Remote: {
+    host: String,
+    port: Number,
+  },
+});
+
+const Data = unionOf({
+  Some: String,
+  None: undefined,
+});
+
 const DeviceEvents = unionOf({
   Disconnected: {
     at: Date,
-    host: String,
-    port: Number,
+    device: Device,
   },
   Connected: {
     at: Date,
-    host: String,
-    port: Number,
+    device: Device,
   },
   ReceivedDataFromDevice: {
     at: Date,
-    host: String,
-    port: Number,
-    data: String,
+    device: Device,
+    data: Data,
   },
   SentDataToDevice: {
     at: Date,
-    host: String,
-    port: Number,
-    data: String,
+    device: Device,
+    data: Data,
   },
 });
 
 type DeviceEvent = TypeOf<typeof DeviceEvents>;
 
+const toDeviceName = Device.caseOf({
+  Local: ({ path }) => `local device at "${path}"`,
+  Remote: ({ host, port }) => `remote device at "${host}:${port}"`,
+});
+
+const toTimeStamp = (date: Date) => date.toISOString();
+
+const toPrintableData = Data.caseOf({
+  None: () => "an empty data packet",
+  Some: (data) => `the data packet "${data}"`,
+});
+
 const toMessage = DeviceEvents.caseOf({
-  Connected({ at, host, port }) {
-    return `Connected to device ${host}:${port} at ${at.toISOString()}`;
+  Connected({ at, device }) {
+    return `Connected to ${toDeviceName(device)} at ${toTimeStamp(at)}`;
   },
-  Disconnected({ at, host, port }) {
-    return `Disconnected from device ${host}:${port} at ${at.toISOString()}`;
+  Disconnected({ at, device }) {
+    return `Disconnected from ${toDeviceName(device)} at ${toTimeStamp(at)}`;
   },
-  ReceivedDataFromDevice({ at, host, port, data }) {
-    return `Received "${data}" from device ${host}:${port} at ${at.toISOString()}`;
+  ReceivedDataFromDevice({ at, device, data }) {
+    return `Received ${toPrintableData(data)} from ${toDeviceName(
+      device
+    )} at ${toTimeStamp(at)}`;
   },
-  SentDataToDevice({ at, host, port, data }) {
-    return `Sent "${data}" to device ${host}:${port} at ${at.toISOString()}`;
+  SentDataToDevice({ at, device, data }) {
+    return `Sent ${toPrintableData(data)} to ${toDeviceName(
+      device
+    )} at ${toTimeStamp(at)}`;
   },
 });
 
-const host = "localhost";
-const port = 80;
+const device = Device.Remote({
+  host: "www.example.com",
+  port: 80,
+});
 
 const events: DeviceEvent[] = [
-  DeviceEvents.Connected({ host, port, at: new Date() }),
+  DeviceEvents.Connected({ at: new Date(), device }),
   DeviceEvents.SentDataToDevice({
-    host,
-    port,
     at: new Date(),
-    data: "GET / HTTP/1.0",
+    device,
+    data: Data.Some("GET / HTTP/1.0"),
+  }),
+  DeviceEvents.SentDataToDevice({
+    at: new Date(),
+    device: Device.Local({ path: "COM1" }),
+    data: Data.None(),
   }),
   DeviceEvents.ReceivedDataFromDevice({
-    host,
-    port,
     at: new Date(),
-    data: "HTTP/1.0 200 OK",
+    device,
+    data: Data.Some("HTTP/1.0 200 OK"),
   }),
-  DeviceEvents.Disconnected({ host, port, at: new Date() }),
+  DeviceEvents.Disconnected({
+    at: new Date(),
+    device,
+  }),
 ];
 
 events.map(toMessage).map((message) => console.log(message));

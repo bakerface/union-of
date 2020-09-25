@@ -1,4 +1,10 @@
-type SchemaToType<T> = T extends BooleanConstructor
+interface UnionLike<Pattern, Type, Return> {
+  caseOf(type: Type, pattern: Pattern): Return;
+}
+
+type SchemaToType<T> = T extends UnionLike<unknown, infer R, unknown>
+  ? R
+  : T extends BooleanConstructor
   ? boolean
   : T extends NumberConstructor
   ? number
