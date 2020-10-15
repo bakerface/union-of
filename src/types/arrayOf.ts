@@ -1,9 +1,9 @@
 import { Err, Ok } from "./result";
-import { ValidationResult, Validator } from "./validator";
+import { ValidationResult, Validator, ValidationContext } from "./validator";
 
 export function arrayOf<T>(item: Validator<T>): Validator<T[]> {
   return {
-    validate: (context) => {
+    validate: (context: ValidationContext): ValidationResult<T[]> => {
       if (!Array.isArray(context.value)) {
         return new Err([{ context, message: "This value is not an array" }]);
       }

@@ -15,3 +15,7 @@ export interface ValidationError {
 export interface Validator<T> {
   validate(context: ValidationContext): ValidationResult<T>;
 }
+
+export type TypeOf<V> = V extends Validator<infer T>
+  ? T
+  : "Error: This value is not a validator";
