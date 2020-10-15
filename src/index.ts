@@ -1,1 +1,1 @@
-export * from "./union-of";
+export * as Schema from "./schema";
