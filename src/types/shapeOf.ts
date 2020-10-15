@@ -9,20 +9,18 @@ import {
 
 export type Shape = Record<string, Validator<any>>;
 
-export type ShapeToType<Shape> = {
+export type ShapeOf<Shape> = {
   readonly [Key in keyof Shape]: TypeOf<Shape[Key]>;
 };
 
-export function shape<T extends Shape>(shape: T): Validator<ShapeToType<T>> {
+export function shapeOf<T extends Shape>(shape: T): Validator<ShapeOf<T>> {
   return {
-    validate: (
-      context: ValidationContext
-    ): ValidationResult<ShapeToType<T>> => {
+    validate: (context: ValidationContext): ValidationResult<ShapeOf<T>> => {
       if (!isRecord(context.value)) {
         return new Err([{ context, message: "This value is not an object" }]);
       }
 
-      let result: ValidationResult<ShapeToType<T>> = new Ok({});
+      let result: ValidationResult<ShapeOf<T>> = new Ok({});
 
       for (const key in shape) {
         const itemResult = shape[key].validate({
@@ -32,12 +30,12 @@ export function shape<T extends Shape>(shape: T): Validator<ShapeToType<T>> {
 
         result = result.caseOf({
           Err: (errors) =>
-            itemResult.caseOf<ValidationResult<ShapeToType<T>>>({
+            itemResult.caseOf<ValidationResult<ShapeOf<T>>>({
               Err: (e) => new Err(errors.concat(e)),
               Ok: () => new Err(errors),
             }),
           Ok: (record) =>
-            itemResult.caseOf<ValidationResult<ShapeToType<T>>>({
+            itemResult.caseOf<ValidationResult<ShapeOf<T>>>({
               Err: (e) => new Err(e),
               Ok: (value) => new Ok({ ...record, [key]: value }),
             }),

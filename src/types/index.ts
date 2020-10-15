@@ -7,6 +7,6 @@ export * from "./oneOf";
 export * from "./optional";
 export * from "./recordOf";
 export * from "./result";
-export * from "./shape";
+export * from "./shapeOf";
 export * from "./string";
 export * from "./validator";

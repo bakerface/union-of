@@ -1,9 +1,11 @@
 import { Err, Ok } from "./result";
 import { ValidationResult, Validator, ValidationContext } from "./validator";
 
-export function arrayOf<T>(item: Validator<T>): Validator<T[]> {
+export type ArrayOf<T> = readonly T[];
+
+export function arrayOf<T>(item: Validator<T>): Validator<ArrayOf<T>> {
   return {
-    validate: (context: ValidationContext): ValidationResult<T[]> => {
+    validate: (context: ValidationContext): ValidationResult<ArrayOf<T>> => {
       if (!Array.isArray(context.value)) {
         return new Err([{ context, message: "This value is not an array" }]);
       }
@@ -18,12 +20,12 @@ export function arrayOf<T>(item: Validator<T>): Validator<T[]> {
 
         arrayResult = arrayResult.caseOf({
           Err: (errors) =>
-            itemResult.caseOf<ValidationResult<T[]>>({
+            itemResult.caseOf<ValidationResult<ArrayOf<T>>>({
               Err: (e) => new Err(errors.concat(e)),
               Ok: () => new Err(errors),
             }),
           Ok: (array) =>
-            itemResult.caseOf<ValidationResult<T[]>>({
+            itemResult.caseOf<ValidationResult<ArrayOf<T>>>({
               Err: (e) => new Err(e),
               Ok: (v) => new Ok(array.concat(v)),
             }),
