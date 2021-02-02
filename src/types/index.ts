@@ -2,6 +2,7 @@ export * from "./any";
 export * from "./arrayOf";
 export * from "./boolean";
 export * from "./constant";
+export * from "./func";
 export * from "./number";
 export * from "./oneOf";
 export * from "./optional";
